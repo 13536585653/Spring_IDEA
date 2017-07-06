@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="org.train.entity.TrainNumber" table="TrainInfo">
+        <id name="tid" column="T_ID" type="string">
+            <generator class="uuid"/>
+        </id>
+        <property name="tnumber" column="T_NUMBER" type="string"/>
+        <property name="fromStation" column="FROM_STATION" type="string"/>
+        <property name="toStation" column="TO_STATION" type="string"/>
+        <property name="seatNum" column="SEAT_NUM" type="int"/>
+        <property name="seatPrice" column="SEAT_PRICE" type="double"/>
+        <property name="bedNum" column="BED_NUM" type="int"/>
+        <property name="bedPrice" column="BED_PRICE" type="double"/>
+    </class>
+</hibernate-mapping> 

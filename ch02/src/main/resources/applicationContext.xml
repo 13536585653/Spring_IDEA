@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--当配置多个Bean的时候，可以给这些bean指定一个id属性，这个属性表示
+    当前bean在容器中的唯一标识符（不能有重复的id）
+    -->
+   <!-- <bean class="org.ch02.service2.UserServiceImp1" id="imp1"/>
+    <bean class="org.ch02.service2.UserServiceImp2" id="imp2"/>-->
+
+    <!--也可以指定name属性，name属性表示被这个bean标识的别名
+    别名可以有多个，可以使用逗号、空格、或者分号隔开,可以根据任意一个别名才能够容器中获取。
+    如果只定义了name并且name有多个别名，而没有定义id属性，那么name
+    的第一个别名就作为唯一标识，其他的将作为别名-->
+    <!--<bean name="s1,s2 s3;s4" class="org.ch02.service2.UserServiceImp1"/>-->
+
+    <!--如果同时指定id和name属性，那么id就是唯一标识，name就是别名-->
+    <!--<bean id="imp1" name="p1,p2" class="org.ch02.service2.UserServiceImp1"/>-->
+
+    <!--bean的初始化方法和销毁方法,
+    init-method会在容器装载bean之后做一些初始化的工作，因为这个方法会在执行完构造方法之后才执行
+    destroy-method会在容器移除bean的时候做一些工作
+    -->
+   <!-- <bean id="imp1" name="p1,p2" class="org.ch02.service2.UserServiceImp1"
+    init-method="init" destroy-method="destroy"/>-->
+
+
+    <!--scope属性，bean的作用域，通过作用域我们可以了解容器是如何创建bean对象的
+    singleton，这是scope的默认值,表示单例，他表示bean对象在容器中只有唯一的一份。
+    prototype，表示原型，当每次调用getBean方法会创建一个新的对象返回
+    容器在初始化的时候只会初始化singleton的bean对象-->
+    <!--<bean id="imp1" class="org.ch02.service2.UserServiceImp1"
+    scope="prototype"/>-->
+
+
+    <!--lazy-init，延迟初始化，告诉容器，当我getBean获取实例的时候才去初始化singleton的bean对象-->
+    <bean id="imp1" class="org.ch02.service.UserServiceImp1"
+    lazy-init="true"/>
+</beans>

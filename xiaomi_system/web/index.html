@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>shopping phone</title>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script>
+        $(function(){
+                var o;
+                $(":button").on("click",function(){
+                    var button = this.id;
+                    if (button =="button1"){
+                        o = "#order";
+                    }else if(button == "button2"){
+                        o = "#order2";
+                    }else if(button == "button3"){
+                        o = "#order3";
+                    }
+                    var params = $(o).serialize();
+                    if(button=="button1" || button=="button2" ||button=="button3")
+                    {
+                        $.post("add",params,function (result) {
+                            alert(result);
+                        });
+                        $("#orderDiv").hide(0);
+                        $("#InfoDiv").delay(1000).show(0);
+                    }
+                });
+
+                $("#button4").on("click",function () {
+                    var params = $("#orderInfo").serialize();
+                    $.post("ajax_save",params,function (result) {
+                            $.each(result,function (key,value) {
+                                $("#msg").append("<font color='red'>"+key+":"+value+"</font><br/>");
+                            });
+                    });
+                });
+        });
+    </script>
+    <style>
+        ul{
+            list-style: none;
+        }
+        li{
+            align-content: center;
+        }
+        #orderDiv{
+            border:solid 1px red;
+            width: 55%;
+            margin-top: 10%;
+        }
+        #InfoDiv{
+            border: solid 1px red;
+            width: 48%;
+            display: none;
+        }
+        .order{
+            float: left;
+            height: 50%;
+        }
+        hr{
+            width:50%;
+        }
+        #orderInfo{
+            margin-top: 2%;
+            line-height: 20%;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div id="orderDiv">
+        <h1>8月15日中午12点开放购买</h1>
+         <form class="order" id="order">
+             <ul>
+                 <li><input readonly style="border: none;" name="phone" value="小米手机3"></li>
+                 <li><input readonly style="border: none;" value="迄今为止最快的小米手机"></li>
+                 <li><input disabled style="border: none;" value="￥1999元"></li>
+                 <li><input type="button" id="button1" value="预约"></li>
+             </ul>
+        </form>
+
+        <form class="order" id="order2">
+            <ul>
+                <li><input readonly style="border: none;" name="phone" value="红米Note"></li>
+                <li><input readonly style="border: none;" value="5.5英寸超大屏"></li>
+                <li><input disabled style="border: none;" value="￥799元"></li>
+                <li><input type="button" id="button2" value="预约"></li>
+            </ul>
+        </form>
+
+        <form class="order" id="order3">
+            <ul>
+                <li><input readonly style="border: none;" name="phone" value="红米手机"></li>
+                <li><input readonly style="border: none;" value="双卡双待神器 真八核"></li>
+                <li><input disabled style="border: none;" value="￥699元"></li>
+                <li><input type="button" id="button3" value="预约"></li>
+            </ul>
+        </form>
+        </div>
+
+
+        <div id="InfoDiv">
+            <h1 style="color: red;">填写预约信息</h1>
+            <hr>
+            <b>请务必填写您的真实信息，购买时使用此信息验证您的身份</b>
+            <div id="msg"></div>
+            <form id="orderInfo">
+                收货人：<input type="text" name="scheduleEntity.consignee"><br>
+                电子邮箱：<input type="text" name="scheduleEntity.email"><br>
+                手机号：<input type="text" name="scheduleEntity.mobile"><br>
+                <hr>
+                <p>为防黄牛，请填写你的详细信息，提交后将作为订单地址且不能修改</p>
+                <br>
+                收获地址：<input type="text" name="scheduleEntity.address"><br>
+                <hr>
+                <input type="button" id="button4" value="下一步">
+            </form>
+        </div>
+    </center>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <package name="pkg1" extends="json-default">
+        <!--注意：当整合spring之后，class属性引用的是spring配置文件中的bean的id
+        这样，struts整合插件就会从spring容器中获取相应的action对象-->
+        <action name="login" class="userAction" method="login">
+            <result type="json">
+                <param name="root">message</param>
+            </result>
+        </action>
+    </package>
+</struts>

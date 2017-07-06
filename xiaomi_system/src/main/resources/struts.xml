@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <package name="pkg1" extends="json-default">
+        <action name="add" class="XMAction" method="add">
+            <result type="json">
+                <param name="root">message</param>
+            </result>
+        </action>
+
+
+        <!--ajax错误显示消息方式-->
+        <action name="ajax_save" class="XMAction" method="save">
+        <result type="json">
+            <param name="root">scheduleEntity</param>
+        </result>
+        <!--当有错误时，返回整个filedError的提示信息-->
+        <result type="json" name="input">
+            <param name="root">fieldErrors</param>
+        </result>
+    </action>
+
+
+
+        <!--jsp错误消息方式-->
+        <action name="jsp_save" class="XMAction" method="save">
+            <result>/success.jsp</result>
+            <!--当有错误时，返回整个filedError的提示信息-->
+            <result name="input">/index.jsp</result>
+        </action>
+    </package>
+</struts>

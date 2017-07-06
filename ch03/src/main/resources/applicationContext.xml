@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--spring五种属性赋值（依赖）注入方式
+    1、通过构造方法注入
+    2、通过set方法注入
+    3、通过type注入
+    4、通过index注入
+    5、通过name注入-->
+    <bean id="demo" class="org.ch03.demo1.Demo">
+
+    <!--1、通过构造方法给属性注入值(构造方法注入，注入的是值),也是原始注入-->
+        <!--<constructor-arg  value="12"/>
+        <constructor-arg  value="langYe"/>-->
+
+        <!--2、根据type（也就是参数类型）进行注入-->
+        <!--<constructor-arg type="java.lang.String" value="langYe"/>
+        <constructor-arg type="int" value="12"/>-->
+
+        <!--3、根据下标（index）进行注入，下标是从0开始-->
+        <!--<constructor-arg index="0" value="langYe"/>
+        <constructor-arg index="1" value="12"/>-->
+
+        <!--4、根据属性名（name）进行注入-->
+        <constructor-arg name="userName" value="langYe"/>
+        <constructor-arg name="age" value="12"/>
+
+        <!--5、通过set方法注入值-->
+        <!--<property name="userName" value="langYe"/>
+        <property name="age" value="12"/>-->
+    </bean>
+
+
+    <!--对象的依赖注入-->
+    <!--&lt;!&ndash;通过People构造方法注入tools对象&ndash;&gt;
+    <bean id="people" class="org.ch03.demo1.People">
+        &lt;!&ndash;ref表示引用某个对象的id，注入到对应的属性中,tools为构造方法参数的名称，tool为类Tools的id&ndash;&gt;
+        <constructor-arg name="tools" ref="tool"/>
+    </bean>-->
+    <!--通过set方法注入tools对象-->
+    <bean id="people" class="org.ch03.demo1.People">
+        <property name="tools" ref="tool"/>
+    </bean>
+    <bean id="tool" class="org.ch03.demo1.Tools"/>
+
+
+
+
+
+
+    <!--配置UserAction(最高层)-->
+    <bean id="userAction" class="org.ch03.demo2.action.UserAction">
+        <!--通过set方法将service注入到UserAction中-->
+        <property name="service" ref="userService"/>
+    </bean>
+    <!--配置UserService(中层)-->
+    <bean id="userService" class="org.ch03.demo2.service.UserServiceImp">
+        <!--通过set方法讲dao注入到UserServiceImpl中-->
+        <property name="dao" ref="userDao"/>
+    </bean>
+    <!--配置UserDao(底层)-->
+    <bean id="userDao" class="org.ch03.demo2.dao.UserDaoImp2"/>
+</beans>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--开启自动代理支持(使用aop必须要首先开启)，当使用纯xml进行aop配置的时候，可以不需要配置
+    （注意：spring只是用到了AspectJ的切入点表达式及注解，但是
+    并没有用到AspectJ的织入功能（产生动态代理对象），也就是说，spring的核心动态代理的创建还是基于jdk和
+    cglib这两种方式）-->
+    <!--proxy-target-class说明：
+    默认spring和aop使用的是jdk和cglib这两种代理技术，当有接口的情况下会选择jdk动态代理，
+    当没有实现接口的时候则会使用cglib进行代理创建。而proxy-target-class这个属性设置为true的时候，
+    表示强制使用cglib来创建代理，
+    false着自动选择，默认值为false-->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+    <!--装配bean-->
+    <bean id="userDao" class="org.ch05.dao.UserDaoImpl"/>
+    <bean id="stuDao" class="org.ch05.dao.StuDaoImpl"/>
+    <!--装配切面-->
+    <bean id="aspect" class="org.ch05.aspect.DaoAspect"/>
+
+
+    <!--aop的配置,proxy-target-class与aspectj-autoproxy里的属性一样，
+    是否强制使用cglib作为动态代理-->
+    <aop:config proxy-target-class="true">
+        <!--定义一个切入点，这里的切入点是使用aspectJ的切入点表达式-->
+        <!--id指定切入点的别名，下面的配置通知时要引用这个切入点
+        expression定义切入点表达式-->
+        <!--
+        切入点表达式语法：
+        execution（表达式），within（表达式），args（参数）
+        表达式语法：
+        访问修饰符【可省略】
+        方法返回值【可使用*通配符】
+        包名【可使用..匹配】
+        类名【可使用*号通配符】
+        方法名【可使用*号通配符】
+        参数【可使用..匹配任意个数类型参数】-->
+        <!--
+        例1、
+        <aop:pointcut id="pointCut" expression="execution(* org.ch05.dao.*.*())"/>
+        例2、<aop:pointcut id="pointCut" expression="within(org.ch05..*)"/>
+        例3、<aop:pointcut id="pointCut" expression="execution(public void org.ch05.dao.UserDaoImpl.save())"/>
+        -->
+        <aop:pointcut id="pointCut" expression="execution(* org.ch05.dao.*.*(..))"/>
+        <!--定义切面。引用切面类，ref属性引用上面定义的aspect的id-->
+        <aop:aspect ref="aspect">
+            <!--在切面中配置通知，就是切面类中定义的方法
+            aop中的通知类型有以下5种
+            1、前置通知（调用目标方法之前执行）
+            2、后置通知（调用目标方法执行并返回之后才调用，如果目标方法在执行过程中出现异常，就不会执行后置通知，而是执行异常通知）
+            3、环绕通知（在调用目标方法之前或之后执行）
+            4、异常通知（调用目标方法时产生异常信息的时候将会执行的通知）
+            5、最终通知（他是在后置通知执行之后才执行，不管调用目
+            标方法时是否产生异常都会执行）-->
+
+            <!--配置前置通知,
+            method指定切面类中定义的方法名,
+            pointcut-ref引用切入点
+            pointcut用于编写切入点表达式，
+            如果不同的通知想要使用不同的切入点，
+            那么就可以利用这是属性编写不同的表达式-->
+            <aop:before method="daoBefore" pointcut-ref="pointCut"/>
+            <!--后置通知,method和pointcut-ref同上
+            returning属性指定通知接收目标的返回值，属性值对应切面中后置通知方法的参数名-->
+            <aop:after-returning method="daoReturnAfter" pointcut-ref="pointCut" returning="val"/>
+            <aop:after-returning method="ReturnAfter" pointcut-ref="pointCut"/>
+            <!--环绕通知（必须要给一个参数指定），method和pointcut-ref同上-->
+            <aop:around method="around" pointcut-ref="pointCut"/>
+            <!--异常通知，method和pointcut-ref同上-->
+            <aop:after-throwing method="afterThrows" pointcut-ref="pointCut"/>
+            <!--最终通知，method和pointcut-ref同上-->
+            <aop:after method="after" pointcut-ref="pointCut"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

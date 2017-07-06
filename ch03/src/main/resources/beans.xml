@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--普通的注入方式，注入值-->
+    <!--<bean id="demo" class="org.ch03.demo1.Demo">
+        <property name="userName" value="langYe"/>
+        <property name="age" value="12"/>
+    </bean>-->
+
+    <!--使用p命名空间的配置-->
+    <bean id="demo" class="org.ch03.demo1.Demo" p:userName="langYe" p:age="12"/>
+
+    <!--当注入是引用其他对象的时候，p标记的语法为：p:属性名-ref="容器中bean的id"-->
+    <bean id="userAction" class="org.ch03.demo2.action.UserAction" p:service-ref="userService"/>
+    <bean id="userService" class="org.ch03.demo2.service.UserServiceImp" p:dao-ref="userDao"/>
+    <bean id="userDao" class="org.ch03.demo2.dao.UserDaoImp2"/>
+</beans>

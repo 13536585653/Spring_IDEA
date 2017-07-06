@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script>
+        $(function () {
+            $("#btn").on("click",function () {
+                var params = $("#f1").serialize();
+                $.post("login",params,function (result) {
+                    if(result.toString()=="登录成功！"){
+                        alert(result);
+                        location.href = "index.html";
+                    }else {
+                        alert(result);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>登录</h1>
+    <form id="f1">
+        UserName:<input type="text" name="user.userName" value="langYe"><br>
+        Password:<input type="password" name="user.password" value="123"><br>
+        <input id="btn" type="button" value="login">
+    </form>
+</body>
+</html>

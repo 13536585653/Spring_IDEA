@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd"
+
+>
+       <!--配置dbcp数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <!-- 连接属性 -->
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+        <!--连接池启动时的初始连接数-->
+        <property name="initialSize" value="5"/>
+        <!--连接池最大连接数-->
+        <property name="maxActive" value="60"/>
+        <!--连接池最大空闲值连接数-->
+        <property name="maxIdle" value="50"/>
+        <!--连接池最小空闲值连接数-->
+        <property name="minIdle" value="10"/>
+        <!--最大的等待时间，单位是毫秒-->
+        <property name="maxWait" value="2000"/>
+        <!--还可以指定其他更多属性...-->
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <!--控制台显示sql语句-->
+                <prop key="hibernate.show_sql">true</prop>
+                <!--数据库方言-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <!--格式化sql语句-->
+                <prop key="hibernate.format_sql">true</prop>
+                <!--自动建模-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!--如果是Oracle必须指定是那个用户创的表-->
+                <!--<prop key="default_schema">Test1</prop>-->
+            </props>
+        </property>
+        <property name="mappingLocations" value="classpath:/mapping/*.hbm.xml"/>
+    </bean>
+
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* org.train.service.*..*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
+    </aop:config>
+
+    <!--users-->
+    <bean id="usersDao" class="org.train.dao.impl.UsersDaoImpl">
+        <property name="factory" ref="sessionFactory"/>
+    </bean>
+    <bean id="usersService" class="org.train.service.impl.UsersServiceImpl">
+        <property name="dao" ref="usersDao"/>
+    </bean>
+    <bean id="usersAction" class="org.train.action.BasicAction">
+        <property name="service" ref="usersService"/>
+    </bean>
+
+    <!--trainNumber-->
+    <bean id="trainDao" class="org.train.dao.impl.TrainDaoImpl">
+        <property name="factory" ref="sessionFactory"/>
+    </bean>
+    <bean id="trainService" class="org.train.service.impl.TrainServiceImpl">
+        <property name="dao" ref="trainDao"/>
+    </bean>
+    <bean id="trainAction" class="org.train.action.BasicAction">
+        <property name="service" ref="trainService"/>
+    </bean>
+</beans>

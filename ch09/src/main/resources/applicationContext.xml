@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--1、开启spring的注解处理器，spring会自动开启多个核心的注解处理器-->
+    <!--<context:annotation-config/>-->
+
+
+    <!--2、设置包扫描的路径，这样spring会根据指定的包，扫描当前包下以及子包下的所有类。
+    但凡类上定义了spring相应的注解（
+    @Component，@Controller，@Service，@Repository
+    那么spring会将这些类自动纳入容器管理）-->
+    <!--base-package可以指定多个路径（多个包路径），之间用逗号隔开-->
+    <!--其实只要配置了component-scan，那么上面的annotation-config可以不需要配置，
+    因为在配置component-scan的时候，会自动开启相应的注解处理器-->
+    <context:component-scan base-package="org.ch09"/>
+</beans>

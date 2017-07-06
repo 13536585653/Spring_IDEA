@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class name="org.ch08.entity.Students" table="STU_INFO">
+        <!--主键-->
+       <id name="sid" column="S_ID" type="string">
+           <!--主键策略-->
+           <generator class="uuid"/>
+       </id>
+        <property name="stuName" column="S_NAME" type="string"/>
+        <property name="age" column="S_AGE" type="int"/>
+        <!--其他实体属性-->
+    </class>
+</hibernate-mapping> 

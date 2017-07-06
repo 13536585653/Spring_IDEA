@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--配置dbcp数据源-->
+    <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <!-- 连接属性 -->
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+        <!--连接池启动时的初始连接数-->
+        <property name="initialSize" value="5"/>
+        <!--连接池最大连接数-->
+        <property name="maxActive" value="60"/>
+        <!--连接池最大空闲值连接数-->
+        <property name="maxIdle" value="50"/>
+        <!--连接池最小空闲值连接数-->
+        <property name="minIdle" value="10"/>
+        <!--最大的等待时间，单位是毫秒-->
+        <property name="maxWait" value="2000"/>
+        <!--还可以指定其他更多属性...-->
+    </bean>
+
+
+    <!--配置sessionFactory，整合之后，把sessionFactory交给spring管理-->
+    <!--对应的hibernate版本一定不能引错-->
+    <bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <!--控制台显示sql语句-->
+                <prop key="hibernate.show_sql">true</prop>
+                <!--数据库方言-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <!--格式化sql语句-->
+                <prop key="hibernate.format_sql">true</prop>
+                <!--自动建模-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+        <!--3、指定实体配置文件的路径，查找所有.hbm.xml的实体配置文件-->
+        <property name="mappingLocations" value="classpath:/mapping/*.hbm.xml"/>
+    </bean>
+
+
+
+    <!--配置hibernate的事务管理器-->
+    <bean name="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
+    <!--配置事务通知,并引用上面的事务管理器-->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <!--配置事务切面，指定切入点和通知的引用。将事务配置在业务层-->
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* com.service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
+    </aop:config>
+
+
+    <!--配置dao，并注入sessionFactory，由于StuDaoImpl继承了BaseDaoImpl
+    因此也就继承了父类的setSessionFactory方法，因此可以在子类中进行注入-->
+    <bean name="adminDao" class="com.dao.Impl.AdminDaoImpl">
+        <property name="factory" ref="sessionFactory"/>
+    </bean>
+
+    <bean name="adminService" class="com.service.impl.AdminServiceImpl">
+        <property name="dao" ref="adminDao"/>
+    </bean>
+
+    <bean name="adminAction" class="com.action.AdminAction">
+        <property name="service" ref="adminService"/>
+    </bean>
+</beans>
